@@ -1,0 +1,80 @@
+{
+  "Delivery": {
+    "policy_name": "Shipping & Logistics Policy",
+    "standard_sla": "Orders are dispatched within 24-48 hours; standard delivery takes 3 to 5 business days.",
+    "tracking_protocol": "Live shipment tracking is available via Carrier Integration using a valid Order ID.",
+    "delay_threshold": "Orders exceeding 5 business days without delivery trigger a courier inquiry.",
+    "escalation_criteria": "Shipments marked undelivered for >7 business days or confirmed lost by carrier are escalated for reshipment/refund.",
+    "relevant_clause": "Check the delivery policy and order-tracking information.",
+    "faqs": [
+      {
+        "q": "Why hasn't my order arrived yet?",
+        "a": "Check the delivery policy and order-tracking information. Standard transit is 3-5 business days."
+      },
+      {
+        "q": "What if tracking shows no movement for 5 days?",
+        "a": "Provide Order ID to initiate an expedited carrier trace."
+      }
+    ]
+  },
+  "Payment": {
+    "policy_name": "Billing & Electronic Transactions Policy",
+    "standard_sla": "Automated gateway settlement and reconciliation window is 24 to 48 hours.",
+    "tracking_protocol": "Requires Bank Reference Number / Transaction UTR or Order ID for trace.",
+    "delay_threshold": "If debit occurred without order confirmation past 48 hours, immediate reversal is logged.",
+    "escalation_criteria": "Duplicate charges or unrecognized debits escalate to the Finance / Accounts department.",
+    "relevant_clause": "Check the billing policy and payment gateway settlement timelines (24-48 hours).",
+    "faqs": [
+      {
+        "q": "Payment was deducted but order was not placed.",
+        "a": "Payment gateways reconcile unassigned charges within 24-48 hours and auto-refund to source."
+      },
+      {
+        "q": "Charged twice for the same transaction.",
+        "a": "Provide both transaction IDs for immediate finance team verification and reversal."
+      }
+    ]
+  },
+  "Product Defect": {
+    "policy_name": "Product Quality & Replacement Policy",
+    "standard_sla": "Defective, leaked, or damaged skincare products are replaced free of charge within 7 days of delivery.",
+    "tracking_protocol": "Requires photographic evidence of defect, batch code, and package condition.",
+    "delay_threshold": "Requests filed beyond 7 days of delivery require supervisory quality approval.",
+    "escalation_criteria": "Skin reactions, seal tampering, or hazardous packaging escalate to Quality Assurance and Health Safety.",
+    "relevant_clause": "Check the 7-day product return/replacement window and damage verification policy.",
+    "faqs": [
+      {
+        "q": "What should I do if the bottle arrived damaged or leaked?",
+        "a": "Share photos of damaged item with Order ID within 7 days for a free immediate replacement."
+      }
+    ]
+  },
+  "Refund": {
+    "policy_name": "Refund & Cancellation Policy",
+    "standard_sla": "Approved refunds process to original payment method within 5 to 7 business days.",
+    "tracking_protocol": "Requires Return Pickup confirmation and warehouse quality inspection.",
+    "delay_threshold": "Refunds pending past 7 business days require banking liaison escalation.",
+    "escalation_criteria": "Discretionary refunds or refunds for non-returnable categories escalate to Support Manager.",
+    "relevant_clause": "Check the refund policy, return status, and 5-7 business days settlement timeline.",
+    "faqs": [
+      {
+        "q": "How long does a refund take after order cancellation?",
+        "a": "Once cancelled, payment is credited back within 5-7 business days depending on customer's bank."
+      }
+    ]
+  },
+  "Service": {
+    "policy_name": "Customer Care & Service Quality Standards",
+    "standard_sla": "Customer grievances and service feedback are reviewed within 24 hours.",
+    "tracking_protocol": "Tracked via Helpdesk Ticket ID and customer account record.",
+    "delay_threshold": "Unanswered tickets past 24 hours receive priority elevation.",
+    "escalation_criteria": "Staff misconduct, severe dissatisfaction, or persistent unaddressed issues escalate to Senior Service Manager.",
+    "relevant_clause": "Check customer grievance handling guidelines and supervisory review policy.",
+    "faqs": [
+      {
+        "q": "How do I lodge a formal complaint about poor support?",
+        "a": "Submit ticket number and summary for review by the customer relations supervisory panel."
+      }
+    ]
+  }
+}

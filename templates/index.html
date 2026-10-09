@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Customer Complaint Resolution Agent</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --badge-delivery: #0284c7;
+            --badge-payment: #d97706;
+            --badge-defect: #dc2626;
+            --badge-refund: #7c3aed;
+            --badge-service: #4b5563;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 24px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 960px;
+        }
+
+        header {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 1.85rem;
+            color: #1e293b;
+            margin-bottom: 6px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .pillars-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .pillar-card {
+            background: white;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #334155;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+
+        .pillar-card span {
+            display: block;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: normal;
+            margin-top: 2px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .sample-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .chip {
+            background-color: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .chip:hover {
+            background-color: #e2e8f0;
+            color: var(--primary);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 14px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.88rem;
+            margin-bottom: 6px;
+            color: #334155;
+        }
+
+        input[type="text"], input[type="file"], textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            font-size: 0.92rem;
+            background-color: #ffffff;
+            transition: border-color 0.2s;
+        }
+
+        input[type="file"] {
+            padding: 7px 10px;
+            background-color: #f8fafc;
+        }
+
+        textarea {
+            height: 90px;
+            resize: vertical;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .upload-section {
+            background: #fdf2f8;
+            border: 1px dashed #f472b6;
+            border-radius: 8px;
+            padding: 14px;
+            margin-top: 14px;
+        }
+
+        .upload-section label {
+            color: #9d174d;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .upload-section p {
+            font-size: 0.8rem;
+            color: #be185d;
+            margin-bottom: 8px;
+        }
+
+        .actions {
+            margin-top: 16px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        button.btn-primary {
+            background-color: var(--primary);
+            color: #ffffff;
+            border: none;
+            padding: 11px 24px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button.btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: white;
+            background-color: var(--primary);
+        }
+
+        .badge-Delivery-Issue { background-color: var(--badge-delivery); }
+        .badge-Payment-Issue { background-color: var(--badge-payment); }
+        .badge-Product-Defect { background-color: var(--badge-defect); }
+        .badge-Refund { background-color: var(--badge-refund); }
+        .badge-Service-Issue { background-color: var(--badge-service); }
+
+        .demo-section {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .demo-title {
+            background-color: #f8fafc;
+            padding: 10px 16px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #1e293b;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .demo-content {
+            padding: 14px 16px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .entity-tag {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin: 2px;
+            font-family: monospace;
+            font-weight: 600;
+        }
+
+        .output-grid {
+            display: grid;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .output-item {
+            background-color: #f8fafc;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .output-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 3px;
+        }
+
+        .output-val {
+            font-size: 0.92rem;
+            color: var(--text-main);
+            line-height: 1.45;
+        }
+
+        .customer-msg-box {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 14px;
+            margin-top: 12px;
+            white-space: pre-line;
+            line-height: 1.55;
+            color: #1e3a8a;
+            font-size: 0.9rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-bottom: 14px;
+        }
+
+        .section-header h2 {
+            font-size: 1.25rem;
+            color: #1e293b;
+        }
+
+        .defect-preview-container {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: #fff1f2;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid #fecdd3;
+            margin-top: 10px;
+        }
+
+        .defect-preview-img {
+            max-width: 90px;
+            max-height: 90px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #fb7185;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Customer Complaint Resolution Agent</h1>
+            <p>End-to-End Pipeline: Classification | Retrieval | Decision-Making | Response Generation</p>
+        </header>
+
+        <div class="pillars-bar">
+            <div class="pillar-card">1. Classification<span>Identifies issue category & entities</span></div>
+            <div class="pillar-card">2. Retrieval<span>Fetches policies & SLAs from KB</span></div>
+            <div class="pillar-card">3. Decision-Making<span>Validates proof & constraints</span></div>
+            <div class="pillar-card">4. Structured Output<span>Generates resolution & response</span></div>
+        </div>
+
+        <div class="card">
+            <label>Quick Preset Samples:</label>
+            <div class="sample-chips">
+                <button type="button" class="chip" onclick="fillForm('', '', 'I ordered a skincare product five days ago, but I have not received it yet. The payment was successful.')">Skincare Delivery (Prompt)</button>
+                <button type="button" class="chip" onclick="fillForm('Praveen Kumar', 'ORD-84912', 'The moisturizing cream bottle was broken upon delivery and the lotion leaked inside the box.')">Product Defect with Order ID</button>
+                <button type="button" class="chip" onclick="fillForm('Dharshini', 'ORD-99321', 'My credit card was debited twice for order ORD-99321, but no invoice was generated.')">Payment Double-Charge</button>
+                <button type="button" class="chip" onclick="fillForm('Rahul', 'ORD-1042', 'I cancelled order ORD-1042 five days ago and still have not received my refund.')">Refund Request</button>
+                <button type="button" class="chip" onclick="fillForm('Ananya', '', 'The phone support representative was extremely rude and ended the call without helping.')">Customer Support Conduct</button>
+            </div>
+
+            <form method="POST" action="/resolve" enctype="multipart/form-data">
+                <div class="form-row">
+                    <div>
+                        <label for="customer_name">Customer Name (Optional):</label>
+                        <input type="text" id="customer_name" name="customer_name" placeholder="e.g. Praveen Kumar" value="{{ customer_name_input or '' }}">
+                    </div>
+                    <div>
+                        <label for="order_id">Order ID (Optional):</label>
+                        <input type="text" id="order_id" name="order_id" placeholder="e.g. ORD-84912 or #9821" value="{{ order_id_input or '' }}">
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 14px;">
+                    <label for="complaint">Customer Complaint Details (Required):</label>
+                    <textarea id="complaint" name="complaint" required placeholder="Type or paste the customer's complaint message here...">{{ complaint_input or '' }}</textarea>
+                </div>
+
+                <div class="upload-section">
+                    <label for="defect_image">&#128247; Upload Product Defect Image / Photographic Proof:</label>
+                    <p>Attach a photo showing the damaged, leaked, or broken item to satisfy the 7-day replacement verification policy.</p>
+                    <input type="file" id="defect_image" name="defect_image" accept="image/*">
+                    {% if uploaded_filename %}
+                    <div class="defect-preview-container">
+                        <img src="/uploads/{{ uploaded_filename }}" alt="Uploaded Defect Proof" class="defect-preview-img">
+                        <div>
+                            <strong>Attached Proof File:</strong> <code>{{ uploaded_filename }}</code><br>
+                            <span style="font-size: 0.8rem; color: #be185d;">&#10003; Photographic damage proof attached and verified.</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="actions">
+                    <button type="submit" class="btn-primary">Execute Agent Pipeline</button>
+                </div>
+            </form>
+        </div>
+
+        {% if result %}
+        <div class="card">
+            <div class="section-header">
+                <h2>Resolution Analysis</h2>
+                <span class="badge badge-{{ result.structured_output.complaint_category|replace(' ', '-') }}">
+                    {{ result.structured_output.complaint_category }}
+                </span>
+            </div>
+
+            <!-- DEMONSTRATION 1: CLASSIFICATION -->
+            <div class="demo-section">
+                <div class="demo-title" style="color: #0284c7;">
+                    <span>CRITERION 1: CLASSIFICATION & ENTITY EXTRACTION</span>
+                    <span>Status: VERIFIED</span>
+                </div>
+                <div class="demo-content">
+                    <p><strong>Classified Category:</strong> {{ result.demonstrations['1_classification']['category'] }}</p>
+                    <p><strong>Intent Indicators:</strong> {{ result.demonstrations['1_classification']['indicators']|join(', ') }}</p>
+                    <div style="margin-top: 8px;">
+                        <strong>Extracted Entities:</strong>
+                        <span class="entity-tag">Customer: {{ result.demonstrations['1_classification']['extracted_entities']['customer_name'] }}</span>
+                        <span class="entity-tag">Order ID: {{ result.demonstrations['1_classification']['extracted_entities']['order_id'] or 'None (Missing)' }}</span>
+                        <span class="entity-tag">Defect Proof Attached: {{ result.demonstrations['1_classification']['extracted_entities']['defect_image_uploaded'] }}</span>
+                        <span class="entity-tag">Duration: {{ result.demonstrations['1_classification']['extracted_entities']['duration'] or 'None' }}</span>
+                        <span class="entity-tag">Payment: {{ result.demonstrations['1_classification']['extracted_entities']['payment_status'] }}</span>
+                        <span class="entity-tag">Product: {{ result.demonstrations['1_classification']['extracted_entities']['product'] }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DEMONSTRATION 2: RETRIEVAL -->
+            <div class="demo-section">
+                <div class="demo-title" style="color: #0d9488;">
+                    <span>CRITERION 2: KNOWLEDGE BASE INFORMATION RETRIEVAL</span>
+                    <span>Status: RETRIEVED</span>
+                </div>
+                <div class="demo-content">
+                    <p><strong>Policy Retrieved:</strong> {{ result.demonstrations['2_retrieval']['policy_name'] }}</p>
+                    <p><strong>Applicable Policy Clause:</strong> {{ result.demonstrations['2_retrieval']['relevant_clause'] }}</p>
+                    <p><strong>Standard SLA Timeline:</strong> {{ result.demonstrations['2_retrieval']['standard_sla'] }}</p>
+                </div>
+            </div>
+
+            <!-- DEMONSTRATION 3: DECISION-MAKING -->
+            <div class="demo-section">
+                <div class="demo-title" style="color: #b45309;">
+                    <span>CRITERION 3: DECISION-MAKING & REASONING</span>
+                    <span>Status: EVALUATED</span>
+                </div>
+                <div class="demo-content">
+                    <strong>Logic Reasoning Trace:</strong>
+                    <ul style="margin-left: 20px; margin-top: 6px;">
+                        {% for step in result.demonstrations['3_decision_making']['reasoning_trace'] %}
+                        <li>{{ step }}</li>
+                        {% endfor %}
+                    </ul>
+                    <p style="margin-top: 8px;"><strong>Anti-Hallucination Guardrail:</strong> {{ result.demonstrations['3_decision_making']['missing_information_checks'] }}</p>
+                    <p><strong>Escalation Decision:</strong> {{ result.demonstrations['3_decision_making']['escalation_condition'] }}</p>
+                </div>
+            </div>
+
+            <!-- DEMONSTRATION 4: STRUCTURED RESPONSE GENERATION -->
+            <div class="demo-section">
+                <div class="demo-title" style="color: #16a34a;">
+                    <span>CRITERION 4: STRUCTURED RESPONSE GENERATION</span>
+                    <span>Status: GENERATED</span>
+                </div>
+                <div class="demo-content">
+                    <div class="output-grid">
+                        <div class="output-item" style="border-left-color: #2563eb;">
+                            <div class="output-label">Complaint Category</div>
+                            <div class="output-val"><strong>{{ result.structured_output.complaint_category }}</strong></div>
+                        </div>
+
+                        <div class="output-item" style="border-left-color: #0284c7;">
+                            <div class="output-label">Issue Summary</div>
+                            <div class="output-val">{{ result.structured_output.issue_summary }}</div>
+                        </div>
+
+                        <div class="output-item" style="border-left-color: #0d9488;">
+                            <div class="output-label">Retrieved Information</div>
+                            <div class="output-val">{{ result.structured_output.retrieved_information }}</div>
+                        </div>
+
+                        <div class="output-item" style="border-left-color: #16a34a;">
+                            <div class="output-label">Recommended Solution</div>
+                            <div class="output-val">{{ result.structured_output.recommended_solution }}</div>
+                        </div>
+
+                        <div class="output-item" style="border-left-color: #ca8a04;">
+                            <div class="output-label">Next Steps</div>
+                            <div class="output-val">{{ result.structured_output.next_steps }}</div>
+                        </div>
+
+                        <div class="output-item" style="border-left-color: #e11d48;">
+                            <div class="output-label">Escalation</div>
+                            <div class="output-val">{{ result.structured_output.escalation }}</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 16px;">
+                        <label>Generated Customer-Facing Communication:</label>
+                        <div class="customer-msg-box">{{ result.customer_response }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function fillForm(name, orderId, complaint) {
+            document.getElementById('customer_name').value = name;
+            document.getElementById('order_id').value = orderId;
+            document.getElementById('complaint').value = complaint;
+        }
+    </script>
+</body>
+</html>
